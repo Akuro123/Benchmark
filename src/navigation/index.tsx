@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, StyleSheet, View } from 'react-native';
 import bell from '../assets/bell.png';
 import newspaper from '../assets/newspaper.png';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Home } from './screens/Home';
 import { Profile } from './screens/Profile';
 import { Settings } from './screens/Settings';
@@ -16,8 +16,33 @@ import SequenceMemory from './screens/SequenceMemory';
 import ReactionTime from './screens/ReactionTime';
 import NumberMemory from './NumberMemory';
 import Chaintest from './screens/Chaintest';
+import Login from './Login';
+import { Register } from './screens/Register';
+import Results from './screens/Results';
+import { getLoggedInUser, logoutUser } from '../db/session';
+import { initDatabase } from '../db/init';
 
+(async () => {
+  try {
+    await initDatabase();
+    console.log('📦 Baza danych zainicjalizowana');
+  } catch (e) {
+    console.error('❌ Błąd inicjalizacji bazy:', e);
+  }
+})();
+const isUserLoggedIn = async () => {
+  const user = await getLoggedInUser();
+  return user !== null;
 
+};
+const handleLogout = async (navigation: any) => {
+  try {
+    await logoutUser();
+    navigation.navigate('Login'); // Przenosi do ekranu logowania
+  } catch (error) {
+    console.error('Błąd wylogowywania:', error);
+  }
+};
 // First define styles
 const styles = StyleSheet.create({
   // Header Styles
@@ -126,12 +151,20 @@ const Drawer = createDrawerNavigator({
   screens: {
     Home: {
       screen: Home,
-      options: { 
+      options: ({ navigation }) => ({
         title: 'Home',
         drawerItemStyle: styles.drawerItem,
         drawerActiveTintColor: styles.drawerItemActive.color,
         drawerActiveBackgroundColor: styles.drawerItemActive.backgroundColor,
-      },
+        headerRight: () => (
+          <HeaderButton
+            onPress={() => handleLogout(navigation)}
+            style={styles.headerButton}
+          >
+            <Text style={styles.headerText}>Wyloguj</Text>
+          </HeaderButton>
+        ),
+      }),
     },
     ReactionTime: {
       screen: ReactionTime,
@@ -164,6 +197,15 @@ const Drawer = createDrawerNavigator({
       screen: Chaintest,
       options: { 
         title: 'Chain Test',
+        drawerItemStyle: styles.drawerItem,
+        drawerActiveTintColor: styles.drawerItemActive.color,
+        drawerActiveBackgroundColor: styles.drawerItemActive.backgroundColor,
+      },
+    },
+    Results:{
+      screen: Results,
+      options: { 
+        title: 'Results',
         drawerItemStyle: styles.drawerItem,
         drawerActiveTintColor: styles.drawerItemActive.color,
         drawerActiveBackgroundColor: styles.drawerItemActive.backgroundColor,
@@ -241,6 +283,23 @@ const RootStack = createNativeStackNavigator({
         ),
       }),
     },
+    Login:{
+      screen: Login,
+      options:{headerShown:false},
+    },
+    Register:{
+      screen: Register,
+      options:{headerShown:false}
+    },
+    Home:{
+      screen:Home,
+      options:{headerShown:false}
+    },
+    Results:{
+      screen:Results,
+      options:{headerShown:false}
+    },
+    
     NotFound: {
       screen: NotFound,
       options: { 
@@ -251,6 +310,7 @@ const RootStack = createNativeStackNavigator({
       linking: { path: '*' },
     },
   },
+  
 });
 
 export const Navigation = createStaticNavigation(RootStack);

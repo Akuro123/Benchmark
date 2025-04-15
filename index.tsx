@@ -2,7 +2,7 @@ import './gesture-handler';
 
 import '@expo/metro-runtime'; // Necessary for Fast Refresh on Web
 import { registerRootComponent } from 'expo';
-
+import { initDatabase } from './src/db/init';
 import { App } from './src/App';
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

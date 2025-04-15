@@ -1,66 +1,111 @@
-
-import { Button, Text } from '@react-navigation/elements';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
+import { Button, Text } from '@react-navigation/elements';
+import { StyleSheet, View, ScrollView, Touchable, TouchableOpacity } from 'react-native';
+
+import { getLoggedInUser } from './../../db/session';
+import { useNavigation } from '@react-navigation/native';
 
 export function Home() {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loggedIn, setLoggedIn] = useState(false);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      const user = await getLoggedInUser();
+      if (!user) {
+        navigation.navigate('Login');
+      }else{
+        setLoggedIn(true);
+      }
+    };
+  
+   
+    checkLogin();
+  }, []);
 
   
 
-
+  if (!loggedIn) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Witaj! Zaloguj się lub załóż konto</Text>
+        <View style={styles.buttonContainer}>
+          <Button title="Zaloguj się" onPress={() => navigation.navigate('Login')} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button title="Zarejestruj się" onPress={() => navigation.navigate('Register')} />
+        </View>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.cardText}>Test1</Text>
-     
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardText}>Test 2</Text>
-      
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardText}>Test 3</Text>
-      
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardText}>Test 4</Text>
-   
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <Text style={styles.title}>Wybierz grę</Text>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('ReactionTime')}
+      >
+        <Text style={styles.buttonText}>Czas reakcji</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('SequenceMemory')}
+      >
+        <Text style={styles.buttonText}>Zapamiętywanie sekwencji</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('NumberMemory')}
+      >
+        <Text style={styles.buttonText}>Zapamiętywanie liczb</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Chaintest')}
+      >
+        <Text style={styles.buttonText}>Test łańcucha</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Results')}
+      >
+        <Text style={styles.buttonText}>Wyniki</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flex: 1,
     padding: 20,
+    justifyContent: 'center',
     backgroundColor: '#f8f8f8',
   },
-  card: {
-    width: '100%',
-    maxWidth: 450,
-    height: 130,
-    marginBottom: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 15,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#0411FB',
+    marginBottom: 30,
+    textAlign: 'center',
   },
-  cardText: {
+  button: {
+    backgroundColor: '#0411FB',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 10,
-    textAlign: 'center',
   },
 });
