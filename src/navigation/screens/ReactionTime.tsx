@@ -1,6 +1,7 @@
 import React, { useState,useRef } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-
+import { addResult } from "../../db/results";
+import { getLoggedInUser } from "../../db/session";
 
 type Status='waiting' | 'ready' | 'clicked';
 
@@ -39,6 +40,10 @@ const handlePress = () =>{
       const time = endTime-start;
       setReactionTime(time);
       setMessage(`Twoj czas reakcji: ${time} ms`);
+
+      getLoggedInUser().then(user =>{
+        addResult(user.id, 'reaction_time',time)
+      })
     }
   } 
   setStatus('clicked');
@@ -76,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#222',
+    backgroundColor: '#1976D2',
     padding: 20,
   },
   button: {
