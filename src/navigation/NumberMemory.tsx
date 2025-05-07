@@ -82,7 +82,7 @@ export default function NumberMemory() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' },
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1976D2' },
   level: { color: '#fff', fontSize: 24, marginBottom: 20 },
   number: { color: '#fff', fontSize: 48, fontWeight: 'bold' },
   input: {

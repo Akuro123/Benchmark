@@ -1,4 +1,4 @@
-// db/init.ts
+
 import { createUsersTable } from './users';
 import { createResultsTable } from './results';
 

@@ -11,7 +11,7 @@ export default function Results() {
   const loadResults = useCallback(async () => {
     const user = await getLoggedInUser();
     if (user) {
-      setUserName(user.name); // <- Zapisujemy imię
+      setUserName(user.name); 
       const userResults = await getUserResults(user.id);
       console.log("Zalogowany użytkownik:", user);
       setResults(userResults);
@@ -27,6 +27,22 @@ export default function Results() {
   useEffect(() => {
     loadResults();
   }, [loadResults]);
+
+  const formatScore = (game: string, score: number): string => {
+    const normalizedGame = game.toLowerCase();
+    const levelBasedGames = ['numbermemory', 'sequencememory', 'chaintest'];
+    return levelBasedGames.includes(normalizedGame)
+      ? `Poziom ${score}`
+      : `${score} ms`;
+  };
+  
+
+  const gameLabels: Record<string, string> = {
+  reaction_time: 'Reaction Time',
+  numbermemory: 'Number Memory',
+  sequencememory: 'Sequence Memory',
+  chaintest: 'Chain Test',
+};
 
   return (
     <ScrollView
@@ -45,8 +61,8 @@ export default function Results() {
         results.map((result) => (
           <View key={result.id} style={styles.resultBox}>
             <Text style={styles.text}>
-              Gra: {result.game} | Wynik: {result.score} ms
-            </Text>
+                Gra: {gameLabels[result.game.toLowerCase()] || result.game} | Wynik: {formatScore(result.game, result.score)}
+              </Text>
             <Text style={styles.text}>
               Data: {new Date(result.timestamp).toLocaleString()}
             </Text>
@@ -61,6 +77,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     alignItems: 'center',
+    backgroundColor: '#1976D2'
   },
   title: {
     fontSize: 26,
@@ -76,7 +93,7 @@ const styles = StyleSheet.create({
   resultBox: {
     marginBottom: 15,
     padding: 10,
-    backgroundColor: '#444',
+    backgroundColor: '#1565C0',
     borderRadius: 10,
     width: '100%',
   },

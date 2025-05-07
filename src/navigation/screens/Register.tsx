@@ -31,7 +31,7 @@ export function Register() {
 
       <TextInput
         style={styles.input}
-        placeholder="Imię i nazwisko"
+        placeholder="Name"
         value={name}
         onChangeText={setName}
       />
@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#1976D2',
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#0411FB',
+    color: 'black',
     marginBottom: 30,
     textAlign: 'center',
   },
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   button: {
-    backgroundColor: '#0411FB',
+    backgroundColor: '#1565C0',
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,

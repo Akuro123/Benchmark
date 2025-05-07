@@ -78,7 +78,7 @@ export default function Chaintest() {
   const saveResult = async () => {
     if (userId !== null) {
       try {
-        await addResult(userId, 'Chaintest', level-1);
+        await addResult(userId, 'Chaintest', level);
         console.log('Wynik zapisany do bazy');
       } catch (err) {
         console.error('Błąd zapisu wyniku do bazy:', err);
@@ -118,7 +118,7 @@ export default function Chaintest() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#222',
+    backgroundColor: '#1976D2',
     padding: 20,
   },
   level: {

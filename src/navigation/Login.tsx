@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, Alert, TouchableOpacity,Image } from 'react-native';
 import { loginUser } from '../db/users';
 import { setLoggedInUser } from '../db/session';
 import { useNavigation } from '@react-navigation/native';
@@ -18,7 +18,7 @@ export default function Login() {
     const user = await loginUser(email, password);
     if (user) {
       await setLoggedInUser(user);
-      navigation.navigate('Drawer'); // Przejdź do Home po zalogowaniu
+      navigation.navigate('Drawer'); 
     } else {
       Alert.alert('Błąd logowania', 'Nieprawidłowy email lub hasło.');
     }
@@ -26,7 +26,8 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Logowanie</Text>
+    <Image source={require('./../assets/profile.png')} style={styles.profileIcon} />
+    <Text style={styles.title}>Logowanie</Text>
 
       <TextInput
         style={styles.input}
@@ -45,7 +46,7 @@ export default function Login() {
         onChangeText={setPassword}
       />
 
-      <Button title="Zaloguj się" onPress={handleLogin} />
+      <Button  title="Zaloguj się" onPress={handleLogin} color="#1565C0"/>
 
       <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.registerButton}>
         <Text style={styles.registerText}>Nie masz konta? Zarejestruj się</Text>
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 25,
     justifyContent: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#1976D2',
   },
   title: {
     fontSize: 26,
@@ -78,10 +79,23 @@ const styles = StyleSheet.create({
   registerButton: {
     marginTop: 20,
     alignSelf: 'center',
+    
+  },
+  LoginButton:{
+    backgroundColor: "#1565C0"
   },
   registerText: {
     color: '#0411FB',
     fontWeight: '600',
     fontSize: 16,
   },
+  profileIcon: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    alignSelf: 'center',
+    marginBottom: 20,
+    marginTop: 20,
+  },
+  
 });

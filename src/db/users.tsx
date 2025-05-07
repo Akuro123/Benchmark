@@ -1,9 +1,9 @@
 import { openDatabaseSync } from 'expo-sqlite';
 
-// Otwórz bazę danych (synchronnie)
+
 const db = openDatabaseSync('mydb.db');
 
-// Tworzenie tabeli users
+
 export const createUsersTable = () => {
   db.execAsync(
     `CREATE TABLE IF NOT EXISTS users (
@@ -19,7 +19,7 @@ export const createUsersTable = () => {
   });
 };
 
-// Dodawanie użytkownika
+
 export const addUser = (name: string, email: string, password: string) => {
   db.runAsync(
     'INSERT INTO users (name, email,password) VALUES (?, ?, ?)',
@@ -31,7 +31,7 @@ export const addUser = (name: string, email: string, password: string) => {
   });
 };
 
-// Pobieranie użytkowników
+
 export const getUsers = async (): Promise<any[]> => {
   try {
     const result = await db.getAllAsync('SELECT * FROM users');
