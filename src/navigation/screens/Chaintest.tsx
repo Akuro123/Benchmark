@@ -18,11 +18,25 @@ export default function Chaintest() {
   const [hidden, setHidden] = useState(false);
   const [expected, setExpected] = useState(1);
   const [userId, setUserId] = useState<number | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(3); // 3,2,1 countdown
 
   useEffect(() => {
     loadUser();
-    startLevel();
   }, []);
+
+  useEffect(() => {
+    if (countdown !== null) {
+      if (countdown === 0) {
+        setCountdown(null);
+        startLevel();
+        return;
+      }
+      const interval = setInterval(() => {
+        setCountdown((prev) => (prev !== null ? prev - 1 : null));
+      }, 666); // 1.5x speed (1000ms / 1.5)
+      return () => clearInterval(interval);
+    }
+  }, [countdown]);
 
   const loadUser = async () => {
     const user = await getLoggedInUser();
@@ -40,7 +54,7 @@ export default function Chaintest() {
       let y = 0;
       let key = '';
       do {
-        x = Math.floor(Math.random() * 4); 
+        x = Math.floor(Math.random() * 4);
         y = Math.floor(Math.random() * 6);
         key = `${x},${y}`;
       } while (used.has(key));
@@ -60,6 +74,7 @@ export default function Chaintest() {
   };
 
   const handlePress = (tile: Tile) => {
+    if (hidden === false || countdown !== null) return; // Disable input during countdown or reveal
     if (tile.number === expected) {
       if (expected === tiles.length) {
         setLevel((prev) => prev + 1);
@@ -88,11 +103,17 @@ export default function Chaintest() {
 
   const restart = () => {
     setLevel(1);
-    startLevel();
+    setCountdown(3);
+    setTiles([]);
   };
 
   return (
     <View style={styles.container}>
+      {countdown !== null && (
+        <View style={styles.countdownContainer}>
+          <Text style={styles.countdownText}>{countdown}</Text>
+        </View>
+      )}
       <Text style={styles.level}>Poziom: {level}</Text>
       <View style={styles.grid}>
         {tiles.map((tile) => (
@@ -144,5 +165,19 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  countdownContainer: {
+    position: 'absolute',
+    top: '40%',
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  countdownText: {
+    fontSize: 72,
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
