@@ -18,7 +18,7 @@ export default function Chaintest() {
   const [hidden, setHidden] = useState(false);
   const [expected, setExpected] = useState(1);
   const [userId, setUserId] = useState<number | null>(null);
-  const [countdown, setCountdown] = useState<number | null>(3); // 3,2,1 countdown
+  const [countdown, setCountdown] = useState<number | null>(3); 
 
   useEffect(() => {
     loadUser();
@@ -33,7 +33,7 @@ export default function Chaintest() {
       }
       const interval = setInterval(() => {
         setCountdown((prev) => (prev !== null ? prev - 1 : null));
-      }, 666); // 1.5x speed (1000ms / 1.5)
+      }, 666); 
       return () => clearInterval(interval);
     }
   }, [countdown]);
@@ -74,7 +74,7 @@ export default function Chaintest() {
   };
 
   const handlePress = (tile: Tile) => {
-    if (hidden === false || countdown !== null) return; // Disable input during countdown or reveal
+    if (hidden === false || countdown !== null) return; 
     if (tile.number === expected) {
       if (expected === tiles.length) {
         setLevel((prev) => prev + 1);
