@@ -1,81 +1,108 @@
-import React, { useState,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { addResult } from "../../db/results";
 import { getLoggedInUser } from "../../db/session";
 
-type Status='waiting' | 'ready' | 'clicked';
-
+type Status = 'countdown' | 'waiting' | 'ready' | 'clicked';
 
 export default function ReactionTime() {
-  const [status,setStatus]=useState<Status>('waiting')
-  const [message,setMessage]=useState<string>("Kliknij aby zaczac");
-  const [reactionTime,setReactionTime]=useState<number | null>(null);
-  const timeoutRef=useRef<NodeJS.Timeout | null>(null);
-  const startTimeRef=useRef<number | null>(null);
+  const [status, setStatus] = useState<Status>('countdown');
+  const [message, setMessage] = useState<string>("Kliknij aby zaczac");
+  const [reactionTime, setReactionTime] = useState<number | null>(null);
+  const [countdown, setCountdown] = useState<number>(3);
 
-const startTest = () => {
-setStatus('waiting');
-setMessage('Czekaj na kolor czerwony');
-setReactionTime(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef<number | null>(null);
 
-const randomDelay= Math.floor(Math.random()*3000)+2000;
-
-timeoutRef.current = setTimeout(()=>{
-  setStatus('ready');
-  setMessage('KLIKNIJ TERAZ');
-  startTimeRef.current = new Date().getTime();
-
-  },randomDelay);
-};
-const handlePress = () =>{
-  if(status === 'waiting'){
-    if(timeoutRef.current){
-      clearTimeout(timeoutRef.current);
+  useEffect(() => {
+    if (status === 'countdown') {
+      let count = 3;
+      setCountdown(count);
+      const countdownInterval = setInterval(() => {
+        count -= 1;
+        if (count === 0) {
+          clearInterval(countdownInterval);
+          setStatus('waiting');
+          startTest();
+        } else {
+          setCountdown(count);
+        }
+      }, 1000);
     }
-    setMessage('Za wczesnie! sprobuj jeszcze raz.')
-  } else if (status === 'ready'){
-    const endTime = new Date().getTime();
-    const start = startTimeRef.current;
-    if (start){
-      const time = endTime-start;
-      setReactionTime(time);
-      setMessage(`Twoj czas reakcji: ${time} ms`);
+  }, [status]);
 
-      getLoggedInUser().then(user =>{
-        addResult(user.id, 'reaction_time',time)
-      })
+  const startTest = () => {
+    setMessage('Czekaj na kolor czerwony');
+
+    const randomDelay = Math.floor(Math.random() * 3000) + 2000;
+
+    timeoutRef.current = setTimeout(() => {
+      setStatus('ready');
+      setMessage('KLIKNIJ TERAZ');
+      startTimeRef.current = new Date().getTime();
+      setReactionTime(null);
+    }, randomDelay);
+  };
+
+  const handlePress = () => {
+    if (status === 'waiting') {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      setMessage('Za wcześnie! Spróbuj jeszcze raz.');
+      setStatus('clicked');
+    } else if (status === 'ready') {
+      const endTime = new Date().getTime();
+      const start = startTimeRef.current;
+      if (start) {
+        const time = endTime - start;
+        setReactionTime(time);
+        setMessage(`Twój czas reakcji: ${time} ms`);
+
+        getLoggedInUser().then(user => {
+          addResult(user.id, 'reaction_time', time);
+        });
+      }
+      setStatus('clicked');
     }
-  } 
-  setStatus('clicked');
+  };
 
-};
+  const restart = () => {
+    setReactionTime(null);
+    setStatus('countdown');
+    setCountdown(3);
+  };
+
   return (
-  <View style={styles.container}>
-    <TouchableOpacity
-      onPress={handlePress}
-      style={[
-        styles.button,
-        status === 'waiting'
-        ? styles.green
-        : status === 'ready'
-        ? styles.red
-        :styles.gray
-      ]}
-    >
-      <Text style={styles.text}>{message}</Text>
-      
-    </TouchableOpacity>
-    {reactionTime !==null && (
-      <Text style={styles.result}>Twoj wynik: {reactionTime} ms</Text>
-    )}
-    {status === 'clicked' && (
-      <TouchableOpacity onPress={startTest}>
-        <Text style={styles.restart}>Sprobuj ponownie</Text>
-      </TouchableOpacity>
-    )}
-  </View>
+    <View style={styles.container}>
+      {status === 'countdown' ? (
+        <Text style={styles.countdownText}>{countdown}</Text>
+      ) : (
+        <TouchableOpacity
+          onPress={status === 'clicked' ? restart : handlePress}
+          style={[
+            styles.button,
+            status === 'waiting'
+              ? styles.green
+              : status === 'ready'
+              ? styles.red
+              : styles.gray
+          ]}
+        >
+          <Text style={styles.text}>
+            {status === 'clicked'
+              ? 'Spróbuj ponownie'
+              : message}
+          </Text>
+        </TouchableOpacity>
+      )}
+      {reactionTime !== null && status === 'clicked' && (
+        <Text style={styles.result}>Twój wynik: {reactionTime} ms</Text>
+      )}
+    </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -83,6 +110,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1976D2',
     padding: 20,
+  },
+  countdownText: {
+    fontSize: 64,
+    color: 'white',
+    fontWeight: 'bold',
   },
   button: {
     width: '100%',

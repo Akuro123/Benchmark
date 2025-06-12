@@ -29,7 +29,7 @@ export default function Results() {
   }, [loadResults]);
 
   const formatScore = (game: string, score: number): string => {
-    const normalizedGame = game.toLowerCase();
+    const normalizedGame = game.toLowerCase().replace(/\s+/g, '');
     const levelBasedGames = ['numbermemory', 'sequencememory', 'chaintest'];
     return levelBasedGames.includes(normalizedGame)
       ? `Poziom ${score}`
