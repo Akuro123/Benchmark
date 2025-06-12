@@ -19,7 +19,7 @@ export default function SequenceMemory() {
   const [showSequence, setShowSequence] = useState(false);
   const [gameOver, setGameOver] = useState(false);
 
-  // Licznik i kontrola pierwszego uruchomienia
+
   const [countdown, setCountdown] = useState<number | null>(3);
   const [hasStarted, setHasStarted] = useState(false);
 
@@ -36,7 +36,7 @@ export default function SequenceMemory() {
     () => Array.from({ length: TILE_COUNT }, () => new Animated.Value(0))
   );
 
-  // 🔁 Licznik na start ekranu
+
   useEffect(() => {
     if (!hasStarted) {
       setHasStarted(true);
@@ -53,11 +53,11 @@ export default function SequenceMemory() {
         } else {
           setCountdown(count);
         }
-      }, 666); // przyspieszone 1.5x (1000ms / 1.5 ≈ 666ms)
+      }, 666); 
     }
   }, []);
 
-  // 🔄 Pokazywanie sekwencji (miganie)
+
   useEffect(() => {
     if (showSequence) {
       let i = 0;

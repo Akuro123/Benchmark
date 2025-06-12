@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     alignItems: 'center',
-    backgroundColor: '#1976D2'
+    backgroundColor: '#1565C0',
+    flex: 1,
   },
   title: {
     fontSize: 26,
@@ -86,17 +87,24 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    fontWeight: '600',
+    
     marginBottom: 20,
-    color: '#888',
+  
   },
-  resultBox: {
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: '#1565C0',
-    borderRadius: 10,
-    width: '100%',
-  },
+resultBox: {
+  marginBottom: 15,
+  padding: 15,
+  backgroundColor: '#1976D2',
+  borderRadius: 10,
+  width: '100%',
+  borderWidth: 2,
+  borderColor: '#fff',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.3,
+  shadowRadius: 3,
+  elevation: 4,
+},
   text: {
     color: '#fff',
     fontSize: 16,
